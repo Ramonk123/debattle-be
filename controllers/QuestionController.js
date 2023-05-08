@@ -4,9 +4,9 @@ const {ObjectId} = require('mongodb');
 
 exports.getQuestion = async (req, res) => {
     const dbo = getClient();
+    const questionId = new ObjectId(req.path.substring(1));
     try {
-        const questionId = new ObjectId(req.path.substring(1));
-        const question = await dbo.collection('questions').find({_id: questionId}).toArray();
+    const question = await dbo.collection('questions').find({_id: questionId}).toArray();
         return res.status(200).json(question)
     } catch (error) {
 
@@ -46,6 +46,28 @@ exports.addQuestion = async (req, res) => {
         console.error(error)
         return res.status(500).json('An error occurred');
     }
+}
+
+exports.editQuestion = async (req, res) => {
+    const dbo = getClient();
+    const body = req.body;
+    const questionId = new ObjectId(req.path.substring(1));
+
+    try {
+        if (!body) {throw new Error('No body present');}
+        delete body._id;
+        dbo.collection('questions').updateOne({_id: questionId}, {$set: body});
+        return res.status(200).json('Question modified');
+
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json('An error occurred');
+
+
+    }
+
+
 }
 
 const getClient = () => {
