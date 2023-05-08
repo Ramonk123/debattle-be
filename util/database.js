@@ -2,8 +2,6 @@ require('dotenv').config()
 const MongoClient = require('mongodb').MongoClient;
 
 const url = `mongodb://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@localhost:27017/${process.env.DATABASE_NAME}`;
-console.log(url);
-
 let client = null;
 
 function connect() {
@@ -18,7 +16,7 @@ function connect() {
 
 function getClient() {
     if (!client) {
-        throw new Error('MongoDB client not initialized');
+        throw new Error('MongoDB database not initialized');
     }
 
     return client;
