@@ -1,4 +1,4 @@
-const database = require('../util/database');
+const {getClient} = require('../util/Database');
 const {ObjectId} = require('mongodb');
 
 
@@ -87,11 +87,6 @@ exports.removeQuestion = async (req, res, next) => {
     } catch (error) {
         next(error);
     }
-}
-
-const getClient = () => {
-    const client = database.getClient();
-    return client.db(process.env.DATABASE_NAME);
 }
 
 const validateForEmptyBody = (body) => {
