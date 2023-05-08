@@ -18,8 +18,7 @@ function getClient() {
     if (!client) {
         throw new Error('MongoDB database not initialized');
     }
-
-    return client;
+    return client.db(process.env.DATABASE_NAME);
 }
 
 module.exports = {
