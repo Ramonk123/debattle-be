@@ -2,10 +2,11 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
-const database = require('./util/database.js');
+const database = require('./util/Database.js');
 
 const questionRoutes = require('./routes/QuestionRoutes');
-const errorHandling = require('./middleware/ErrorHandling');
+const authenticationRoutes = require('./routes/AuthenticationRoutes')
+const errorHandling = require('./middleware/ErrorHandler');
 
 const bodyParser = require('body-parser');
 
@@ -17,6 +18,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}))
 
 app.use('/question', questionRoutes);
+app.use('/auth', authenticationRoutes);
 app.use(errorHandling);
 
 

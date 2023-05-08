@@ -1,12 +1,13 @@
-const errorHandling = (err, req, res) => {
-    console.log(err)
+const errorHandler = (err, req, res) => {
     const statusCode = err.statusCode || 500;
+    console.log(err)
     const message =
         err.message ||
         "Er is iets misgegaan op de server, probeer het later opnieuw.";
 
-    res.status(statusCode).json({ message: message });
+    return res.status(statusCode).json(message);
+
 };
 
 
-module.exports = errorHandling;
+module.exports = errorHandler;
