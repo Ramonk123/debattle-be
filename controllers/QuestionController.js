@@ -2,46 +2,45 @@ const database = require('../util/database');
 const {ObjectId} = require('mongodb');
 
 
-exports.getQuestion = async (req, res) => {
+exports.getQuestion = async (req, res, next) => {
     const dbo = getClient();
     try {
-        const questionId = new ObjectId(req.path.substring(1));
+        const questionId = new ObjectId(req.params.id);
         const question = await dbo.collection('questions').find({_id: questionId}).toArray();
         if (!question || question.length === 0) {
-            throw new Error(`No question found with id: ${questionId}`);
+            const error = new Error(`No question found with id: ${questionId}`);
+            error.statusCode = 404;
+            throw error;
         }
         return res.status(200).json(question)
     } catch (error) {
-
-        console.error(error)
-        return res.status(404).json(error.message);
-
+        next(error);
     }
 }
 
-exports.getQuestions = async (req, res) => {
+exports.getQuestions = async (req, res, next) => {
     const dbo = getClient();
     try {
         const questions = await dbo.collection('questions').find().toArray();
         if (questions.length === 0) {
-            throw new Error('No questions found');
+            const error = new Error('No questions found');
+            error.statusCode = 404;
+            throw error;
         }
         return res.status(200).json(questions);
     } catch (error) {
-
-        return res.status(500).json('An error occurred');
+        next(error);
     }
 
 }
 
-exports.addQuestion = async (req, res) => {
+exports.addQuestion = async (req, res, next) => {
     const dbo = getClient();
     const body = req.body;
 
     try {
-        if (Object.keys(body).length === 0) {
-            throw new Error('Request body is empty');
-        } else if (body.length === 1) {
+        validateForEmptyBody(body);
+        if (body.length === 1) {
             await dbo.collection('questions').insertOne(body[0]);
             return res.status(201).json('Question added');
         } else if (body.length > 1) {
@@ -49,50 +48,57 @@ exports.addQuestion = async (req, res) => {
             return res.status(201).json('Questions added');
         }
     } catch (error) {
-        console.error(error)
-        return res.status(500).json(error.message);
+        next(error);
     }
 }
 
-exports.editQuestion = async (req, res) => {
+exports.editQuestion = async (req, res, next) => {
     const dbo = getClient();
     const body = req.body;
-    console.log(body)
 
     try {
-        const questionId = new ObjectId(req.path.substring(1));
-        if (Object.keys(body).length === 0) {
-            throw new Error('No body present');
-        }
+        const questionId = new ObjectId(req.params.id);
+        validateForEmptyBody(body);
         delete body._id;
         const questionResult = await dbo.collection('questions').updateOne({_id: questionId}, {$set: body});
         if (questionResult.matchedCount === 0) {
-            throw new Error('No matches found');
+            const error = new Error('No matches found');
+            error.statusCode = 404;
+            throw error;
         }
         return res.status(200).json('Question modified');
 
     } catch (error) {
-        console.error(error);
-        return res.status(500).json(error.message);
+        next(error);
     }
 }
 
-exports.removeQuestion = async (req, res) => {
+exports.removeQuestion = async (req, res, next) => {
     const dbo = getClient();
     try {
-        const questionId = new ObjectId(req.path.substring(1));
+        const questionId = new ObjectId(req.params.id);
         const questionResult = await dbo.collection('questions').deleteOne({_id: questionId});
         if (questionResult.deletedCount === 0) {
-            throw new Error(`Question with id: ${questionId} could not be found`);
+            const error = new Error(`Question with id: ${questionId} could not be found`);
+            error.statusCode = 404;
+            throw error;
         }
         return res.status(200).json('Question has been deleted');
     } catch (error) {
-        console.error(error);
-        return res.status(500).json(error.message);
+        next(error);
     }
 }
 
 const getClient = () => {
     const client = database.getClient();
     return client.db(process.env.DATABASE_NAME);
+}
+
+const validateForEmptyBody = (body) => {
+    if (Object.keys(body).length === 0) {
+        const error = new Error('No body present');
+        error.statusCode = 400;
+        throw error;
+    }
+
 }

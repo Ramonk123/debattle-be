@@ -5,6 +5,7 @@ const port = 3000;
 const database = require('./util/database.js');
 
 const questionRoutes = require('./routes/QuestionRoutes');
+const errorHandling = require('./middleware/ErrorHandling');
 
 const bodyParser = require('body-parser');
 
@@ -16,6 +17,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}))
 
 app.use('/question', questionRoutes);
+app.use(errorHandling);
 
 
 database.connect()
