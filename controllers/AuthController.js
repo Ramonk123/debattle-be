@@ -33,10 +33,10 @@ exports.createUser = async (req, res, next) => {
     const dbo = getClient();
 
     try {
-        const {email, password} = req.body;
+        const {partyName, email, password} = req.body;
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
-        await dbo.collection('users').insertOne({email: email, password: hashedPassword});
+        await dbo.collection('users').insertOne({email: email, password: hashedPassword, party: partyName});
         return res.status(201).json('user created');
     } catch (error) {
         next(error);

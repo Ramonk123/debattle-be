@@ -1,6 +1,6 @@
 const errorHandler = (err, req, res) => {
     const statusCode = err.statusCode || 500;
-    console.log(err)
+    console.error(err)
     const message =
         err.message ||
         "Er is iets misgegaan op de server, probeer het later opnieuw.";
