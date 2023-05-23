@@ -37,7 +37,6 @@ exports.getQuestions = async (req, res, next) => {
 exports.addQuestion = async (req, res, next) => {
     const dbo = getClient();
     const body = req.body;
-
     try {
         validateForEmptyBody(body);
         if (body.length === 1) {
