@@ -3,15 +3,20 @@ const {ObjectId} = require('mongodb');
 
 
 exports.getQuestion = async (req, res, next) => {
+    const category = req.params.category
+    console.log(category)
+
     const dbo = getClient();
     try {
         const questionId = new ObjectId(req.params.id);
-        const question = await dbo.collection('questions').find({_id: questionId}).toArray();
+        const question = await dbo.collection('questions').find({category: category}).toArray();
         if (!question || question.length === 0) {
-            const error = new Error(`No question found with id: ${questionId}`);
+            const error = new Error(`No question found `);
             error.statusCode = 404;
             throw error;
         }
+        console.log(question)
+        // console.log(question[0].answers[0])
         return res.status(200).json(question)
     } catch (error) {
         next(error);

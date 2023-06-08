@@ -4,7 +4,8 @@ const port = 3000;
 const database = require('./util/Database.js');
 const cookieParser = require('cookie-parser');
 const questionRoutes = require('./routes/QuestionRoutes');
-const authenticationRoutes = require('./routes/AuthenticationRoutes')
+const authenticationRoutes = require('./routes/AuthenticationRoutes');
+const userRoutes = require('./routes/UserRoutes');
 const errorHandling = require('./middleware/ErrorHandler');
 
 const bodyParser = require('body-parser');
@@ -20,6 +21,7 @@ app.use(bodyParser.urlencoded({extended: true}))
 
 app.use('/question', questionRoutes);
 app.use('/auth', authenticationRoutes);
+app.use('/user', userRoutes);
 app.use(errorHandling);
 
 

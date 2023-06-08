@@ -1,5 +1,6 @@
-const errorHandler = (err, req, res) => {
+const errorHandler = (err, req, res, next) => {
     console.log('hier kom ik niet')
+    console.log(err.message)
     const statusCode = err.statusCode || 500;
     const message =
         err.message ||
