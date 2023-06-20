@@ -4,7 +4,6 @@ const {ObjectId} = require('mongodb');
 
 exports.updateProgress = async (req, res, next ) => {
     const dbo = getClient();
-    console.log('who am i ')
     const userId = req.params.id;
     const body = req.body;
 
@@ -26,7 +25,6 @@ exports.updateProgress = async (req, res, next ) => {
 exports.getProgress = async (req, res, next) => {
     const dbo = getClient();
     const userId = new ObjectId(req.params.id);
-    console.log(userId);
     try {
         const result = await dbo.collection('users').find({"_id" : userId}).toArray();
         console.log(result)

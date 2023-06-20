@@ -22,7 +22,6 @@ exports.login = async (req, res, next) => {
         res.cookie('token', token, {httpOnly: true, secure: true, sameSite: 'None'}); //set secure to true when using HTTPS
         delete user[0].email;
         delete user[0].password;
-        console.log(user)
         return res.status(200).json(
            user
         );
@@ -38,6 +37,11 @@ exports.createUser = async (req, res, next) => {
 
     try {
         const {email, password} = req.body;
+        let existingUser = await dbo.collection('users').findOne({email: email});
+        if (existingUser) {
+            throw new Error('User already exists');
+        }
+
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
         await dbo.collection('users').insertOne({

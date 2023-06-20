@@ -4,8 +4,6 @@ const {ObjectId} = require('mongodb');
 
 exports.getQuestion = async (req, res, next) => {
     const category = req.params.category
-    console.log(category)
-
     const dbo = getClient();
     try {
         const questionId = new ObjectId(req.params.id);
@@ -15,8 +13,6 @@ exports.getQuestion = async (req, res, next) => {
             error.statusCode = 404;
             throw error;
         }
-        console.log(question)
-        // console.log(question[0].answers[0])
         return res.status(200).json(question)
     } catch (error) {
         next(error);
